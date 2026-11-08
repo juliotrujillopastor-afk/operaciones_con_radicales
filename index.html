@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RadicalMaster 4º ESO - Operaciones con Radicales</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- MathJax Configuration -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        if (window.appReady) window.appReady();
+                    });
+                }
+            }
+        };
+    </script>
+    <!-- MathJax v3 -->
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at top right, #1e1b4b, #0f172a, #020617);
+        }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glow-button {
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+            transition: all 0.2s ease-in-out;
+        }
+        .glow-button:hover {
+            box-shadow: 0 0 25px rgba(99, 102, 241, 0.7);
+            transform: translateY(-2px);
+        }
+        /* Custom MathJax container scaling */
+        .math-container {
+            overflow-x: auto;
+            max-w: 100%;
+        }
+        .mjx-chtml {
+            font-size: 110% !important;
+        }
+        /* Scrollbar styles */
+        ::-webkit-scrollbar {
+            height: 6px;
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+
+    <!-- TOP NAVBAR -->
+    <header class="w-full glass-panel sticky top-0 z-50 border-b border-slate-700/50">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+            <!-- App Logo -->
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-emerald-400 flex items-center justify-center text-white font-black text-lg shadow-lg">
+                    $\sqrt{x}$
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold bg-gradient-to-r from-indigo-300 via-purple-300 to-pink-300 bg-clip-text text-transparent">
+                        RadicalMaster
+                    </h1>
+                    <p class="text-xs text-indigo-300/80 font-medium">4º ESO • Operaciones con Radicales</p>
+                </div>
+            </div>
+
+            <!-- Stats & Controls -->
+            <div class="flex items-center space-x-3 sm:space-x-4 text-xs sm:text-sm">
+                <!-- Mastery Rank -->
+                <div class="hidden sm:flex items-center bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700">
+                    <i class="fa-solid fa-award text-amber-400 mr-2"></i>
+                    <span id="rank-text" class="font-semibold text-slate-200">Iniciado 🌱</span>
+                </div>
+
+                <!-- Streak Counter -->
+                <div class="flex items-center bg-amber-500/10 border border-amber-500/30 px-3 py-1.5 rounded-lg text-amber-400 font-bold">
+                    <i class="fa-solid fa-fire text-amber-400 mr-1.5 animate-pulse"></i>
+                    <span id="streak-count">0</span>
+                </div>
+
+                <!-- Points -->
+                <div class="flex items-center bg-indigo-500/10 border border-indigo-500/30 px-3 py-1.5 rounded-lg text-indigo-300 font-bold">
+                    <i class="fa-solid fa-star text-indigo-400 mr-1.5"></i>
+                    <span id="points-count">0</span> pts
+                </div>
+
+                <!-- Audio Toggle -->
+                <button id="sound-btn" onclick="toggleSound()" class="w-9 h-9 rounded-lg bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-300 transition-colors border border-slate-700" title="Activar/Desactivar Sonido">
+                    <i id="sound-icon" class="fa-solid fa-volume-high text-emerald-400"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-4xl mx-auto px-4 py-6 w-full flex-grow">
+        
+        <!-- MODULE NAVIGATION TABS -->
+        <nav class="flex overflow-x-auto gap-2 pb-3 mb-6 scrollbar-none" id="module-tabs">
+            <button onclick="switchModule(1)" id="tab-1" class="module-tab flex items-center space-x-2 px-4 py-2.5 rounded-xl font-medium text-xs sm:text-sm whitespace-nowrap transition-all duration-200 bg-indigo-600 text-white shadow-lg shadow-indigo-600/30">
+                <i class="fa-solid fa-box-open"></i>
+                <span>1. Extracción e Introducción</span>
+            </button>
+            <button onclick="switchModule(2)" id="tab-2" class="module-tab flex items-center space-x-2 px-4 py-2.5 rounded-xl font-medium text-xs sm:text-sm whitespace-nowrap transition-all duration-200 bg-slate-800/80 text-slate-300 hover:bg-slate-700 border border-slate-700">
+                <i class="fa-solid fa-plus-minus"></i>
+                <span>2. Suma y Resta</span>
+            </button>
+            <button onclick="switchModule(3)" id="tab-3" class="module-tab flex items-center space-x-2 px-4 py-2.5 rounded-xl font-medium text-xs sm:text-sm whitespace-nowrap transition-all duration-200 bg-slate-800/80 text-slate-300 hover:bg-slate-700 border border-slate-700">
+                <i class="fa-solid fa-xmark"></i>
+                <span>3. Multiplicación y División</span>
+            </button>
+            <button onclick="switchModule(4)" id="tab-4" class="module-tab flex items-center space-x-2 px-4 py-2.5 rounded-xl font-medium text-xs sm:text-sm whitespace-nowrap transition-all duration-200 bg-slate-800/80 text-slate-300 hover:bg-slate-700 border border-slate-700">
+                <i class="fa-solid fa-bolt"></i>
+                <span>4. Potencias y Raíz de Raíz</span>
+            </button>
+            <button onclick="switchModule(5)" id="tab-5" class="module-tab flex items-center space-x-2 px-4 py-2.5 rounded-xl font-medium text-xs sm:text-sm whitespace-nowrap transition-all duration-200 bg-slate-800/80 text-amber-400 hover:bg-slate-700 border border-amber-500/30">
+                <i class="fa-solid fa-stopwatch text-amber-400"></i>
+                <span>5. 🔥 Desafío Examen</span>
+            </button>
+        </nav>
+
+        <!-- CHALLENGE TIMER BAR (HIDDEN BY DEFAULT) -->
+        <div id="timer-container" class="hidden mb-6 glass-panel rounded-xl p-4 border border-amber-500/30">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-xs sm:text-sm font-semibold text-amber-300 flex items-center gap-2">
+                    <i class="fa-solid fa-hourglass-half animate-spin"></i> Tiempo restante:
+                </span>
+                <span id="timer-text" class="font-mono text-base sm:text-lg font-bold text-amber-400">45 s</span>
+            </div>
+            <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                <div id="timer-bar" class="bg-gradient-to-r from-amber-500 to-red-500 h-full w-full transition-all duration-1000 linear"></div>
+            </div>
+        </div>
+
+        <!-- PRACTICE CARD CONTAINER -->
+        <div class="glass-panel rounded-2xl p-5 sm:p-8 shadow-2xl relative overflow-hidden mb-6">
+            
+            <!-- Card Header: Title & Hint Trigger -->
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-700/60">
+                <div>
+                    <span id="module-badge" class="px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                        Módulo 1
+                    </span>
+                    <h2 id="exercise-title" class="text-lg sm:text-xl font-bold text-slate-100 mt-2">
+                        Extracción de factores del radical
+                    </h2>
+                </div>
+                <button onclick="toggleHint()" class="flex items-center space-x-2 text-xs font-semibold px-3 py-2 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 transition-colors">
+                    <i class="fa-solid fa-lightbulb"></i>
+                    <span>Ver Pista</span>
+                </button>
+            </div>
+
+            <!-- Hint Collapsible -->
+            <div id="hint-box" class="hidden mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-xs sm:text-sm animate-fade-in">
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-circle-info text-amber-400 text-base mt-0.5"></i>
+                    <div>
+                        <span class="font-bold block mb-1">Pista Teórica:</span>
+                        <p id="hint-text">Factoriza el número en factores primos y agrupa según el índice de la raíz.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- QUESTION AREA (PROPORTIONATED INSTRUCTION + MATH FORMULA) -->
+            <div class="my-6 text-center py-6 px-4 rounded-2xl bg-slate-950/70 border border-slate-800 shadow-inner flex flex-col items-center justify-center gap-3">
+                <!-- Human Readable Instruction (Clean Typography) -->
+                <p id="math-instruction" class="text-slate-300 font-medium text-base sm:text-lg leading-relaxed max-w-2xl">
+                    Extrae todos los factores posibles del radical:
+                </p>
+                <!-- Pure LaTeX Math Display (MathJax rendered box with clean overflow) -->
+                <div class="w-full math-container py-2 flex justify-center items-center">
+                    <div id="math-formula" class="text-2xl sm:text-4xl font-extrabold text-indigo-200 min-h-[50px] flex items-center justify-center">
+                        $$\sqrt[3]{40}$$
+                    </div>
+                </div>
+            </div>
+
+            <!-- INPUT MODE SELECTION TABS -->
+            <div class="flex justify-center mb-6">
+                <div class="bg-slate-900/90 p-1 rounded-xl border border-slate-800 flex space-x-1">
+                    <button id="mode-btn-form" onclick="switchInputMode('form')" class="px-4 py-1.5 rounded-lg text-xs font-semibold transition-all bg-indigo-600 text-white shadow">
+                        <i class="fa-solid fa-pen-to-square mr-1.5"></i> Entrada Guiada
+                    </button>
+                    <button id="mode-btn-mc" onclick="switchInputMode('mc')" class="px-4 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white">
+                        <i class="fa-solid fa-list-check mr-1.5"></i> Opción Múltiple
+                    </button>
+                </div>
+            </div>
+
+            <!-- ANSWER INPUT SECTION 1: GUIDED FORM -->
+            <div id="input-mode-form" class="max-w-xl mx-auto mb-6">
+                <p class="text-center text-xs text-slate-400 mb-4 font-medium">
+                    Introduce los valores para obtener la forma simplificada $a \cdot \sqrt[n]{b}$:
+                </p>
+
+                <!-- Checkbox for "No radical / integer result" -->
+                <div class="flex items-center justify-center gap-2 mb-4 bg-slate-900/40 py-2 px-3 rounded-lg border border-slate-800/80">
+                    <input type="checkbox" id="no-radical-check" onchange="handleNoRadicalToggle()" class="w-4 h-4 rounded bg-slate-800 border-slate-700 text-indigo-600 focus:ring-indigo-500 focus:ring-offset-slate-900 cursor-pointer">
+                    <label for="no-radical-check" class="text-xs font-medium text-slate-300 cursor-pointer select-none">
+                        El resultado es un número entero simple (sin raíz $\sqrt{\phantom{x}}$)
+                    </label>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-center">
+                    
+                    <!-- Coeficiente (a) -->
+                    <div class="flex flex-col">
+                        <label class="text-xs font-semibold text-slate-300 mb-1 flex items-center justify-between">
+                            <span>Coeficiente ($a$)</span>
+                        </label>
+                        <input type="number" id="input-coef" placeholder="1" oninput="updateLivePreview()" 
+                               class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-slate-100 font-bold text-center text-base focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 transition-all">
+                    </div>
+
+                    <!-- Índice (n) -->
+                    <div id="index-input-wrapper" class="flex flex-col">
+                        <label class="text-xs font-semibold text-slate-300 mb-1 flex items-center justify-between">
+                            <span>Índice ($n$)</span>
+                        </label>
+                        <input type="number" id="input-index" placeholder="2" value="2" min="2" max="10" oninput="updateLivePreview()" 
+                               class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-slate-100 font-bold text-center text-base focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 transition-all">
+                    </div>
+
+                    <!-- Radicando (b) -->
+                    <div id="radicand-input-wrapper" class="flex flex-col">
+                        <label class="text-xs font-semibold text-slate-300 mb-1 flex items-center justify-between">
+                            <span>Radicando ($b$)</span>
+                        </label>
+                        <input type="number" id="input-radicand" placeholder="1" oninput="updateLivePreview()" 
+                               class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-slate-100 font-bold text-center text-base focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 transition-all">
+                    </div>
+                </div>
+
+                <!-- Live Student Answer Preview -->
+                <div class="mt-4 p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-center">
+                    <span class="text-xs text-slate-500 uppercase tracking-wider font-semibold block mb-1">Vista Previa de Tu Respuesta:</span>
+                    <div class="math-container flex justify-center items-center">
+                        <div id="live-preview" class="text-lg sm:text-xl font-bold text-emerald-400 min-h-[30px] flex items-center justify-center">
+                            <!-- Rendered preview -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ANSWER INPUT SECTION 2: MULTIPLE CHOICE (HIDDEN BY DEFAULT) -->
+            <div id="input-mode-mc" class="hidden max-w-2xl mx-auto mb-6">
+                <p class="text-center text-xs text-slate-400 mb-4 font-medium">Selecciona la respuesta correcta:</p>
+                <div id="mc-options-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <!-- Dynamic multiple choice cards -->
+                </div>
+            </div>
+
+            <!-- ACTION BUTTONS -->
+            <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+                <button id="check-btn" onclick="checkAnswer()" class="glow-button px-7 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm sm:text-base flex items-center space-x-2">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span>Comprobar Respuesta</span>
+                </button>
+
+                <button id="next-btn" onclick="generateNextExercise()" class="hidden px-7 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm sm:text-base flex items-center space-x-2 border border-slate-700">
+                    <span>Siguiente Ejercicio</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+
+                <button id="explain-btn" onclick="toggleExplanation()" class="px-5 py-3 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 font-semibold text-xs sm:text-sm flex items-center space-x-2 border border-slate-700">
+                    <i class="fa-solid fa-graduation-cap text-indigo-400"></i>
+                    <span>Ver Paso a Paso</span>
+                </button>
+            </div>
+
+            <!-- FEEDBACK ALERT BOX -->
+            <div id="feedback-card" class="hidden mt-6 p-4 rounded-xl border text-center transition-all animate-fade-in">
+                <div class="flex items-center justify-center gap-2 font-bold text-base sm:text-lg mb-1" id="feedback-title">
+                    <!-- Title -->
+                </div>
+                <div id="feedback-detail" class="text-xs sm:text-sm opacity-90 math-container"></div>
+            </div>
+
+            <!-- STEP-BY-STEP EXPLANATION ACCORDION -->
+            <div id="explanation-card" class="hidden mt-6 p-5 sm:p-6 rounded-2xl bg-slate-900/90 border border-indigo-500/30 text-left">
+                <h3 class="text-base sm:text-lg font-bold text-indigo-300 mb-4 flex items-center gap-2 border-b border-slate-800 pb-3">
+                    <i class="fa-solid fa-diagram-project text-indigo-400"></i>
+                    Resolución Detallada Paso a Paso
+                </h3>
+                <div id="explanation-steps" class="space-y-3 text-xs sm:text-sm text-slate-200">
+                    <!-- Detailed LaTeX steps injected here -->
+                </div>
+            </div>
+
+        </div>
+
+        <!-- PEDAGOGICAL SUMMARY & MASTERY CARD -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div class="glass-card rounded-xl p-4 flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 text-lg font-bold">
+                    <i class="fa-solid fa-calculator"></i>
+                </div>
+                <div>
+                    <span class="text-xs text-slate-400 font-medium">Ejercicios Resueltos</span>
+                    <p id="stat-total" class="text-lg font-bold text-slate-100">0</p>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-xl p-4 flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 text-lg font-bold">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <div>
+                    <span class="text-xs text-slate-400 font-medium">Precisión de Aciertos</span>
+                    <p id="stat-accuracy" class="text-lg font-bold text-emerald-400">100%</p>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-xl p-4 flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 text-lg font-bold">
+                    <i class="fa-solid fa-crown"></i>
+                </div>
+                <div>
+                    <span class="text-xs text-slate-400 font-medium">Nivel de Maestría</span>
+                    <p id="stat-level" class="text-lg font-bold text-purple-300">Nivel 1 (ESO)</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="w-full glass-panel py-4 mt-8 border-t border-slate-800 text-center text-xs text-slate-400">
+        <p>RadicalMaster 4º ESO • Operaciones con Radicales • Sin Racionalización</p>
+    </footer>
+
+    <!-- JAVASCRIPT APPLICATION LOGIC -->
+    <script>
+        /* ==========================================================================
+           AUDIO SYSTEM (Vanilla Web Audio API)
+           ========================================================================== */
+        let soundEnabled = true;
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new AudioCtx();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('sound-icon');
+            if (soundEnabled) {
+                icon.className = 'fa-solid fa-volume-high text-emerald-400';
+            } else {
+                icon.className = 'fa-solid fa-volume-xmark text-slate-500';
+            }
+        }
+
+        function playAudio(type) {
+            if (!soundEnabled) return;
+            try {
+                initAudio();
+                const now = audioCtx.currentTime;
+                
+                if (type === 'correct') {
+                    const freqs = [523.25, 659.25, 783.99, 1046.50];
+                    freqs.forEach((freq, idx) => {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq, now + idx * 0.07);
+                        gain.gain.setValueAtTime(0.12, now + idx * 0.07);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.07 + 0.25);
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.start(now + idx * 0.07);
+                        osc.stop(now + idx * 0.07 + 0.25);
+                    });
+                } else if (type === 'incorrect') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, now);
+                    osc.frequency.exponentialRampToValueAtTime(110, now + 0.3);
+                    gain.gain.setValueAtTime(0.12, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'click') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.frequency.setValueAtTime(800, now);
+                    gain.gain.setValueAtTime(0.03, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.04);
+                }
+            } catch(e) {
+                console.warn('Audio error:', e);
+            }
+        }
+
+        /* ==========================================================================
+           MATHEMATICAL ENGINE & HELPERS
+           ========================================================================== */
+        
+        function getPrimeFactors(n) {
+            let factors = {};
+            let d = 2;
+            let temp = Math.abs(n);
+            while (temp >= 2) {
+                if (temp % d === 0) {
+                    factors[d] = (factors[d] || 0) + 1;
+                    temp = temp / d;
+                } else {
+                    d++;
+                }
+            }
+            return factors;
+        }
+
+        function formatPrimeFactorization(n) {
+            const factors = getPrimeFactors(n);
+            let parts = [];
+            for (let p in factors) {
+                if (factors[p] === 1) parts.push(`${p}`);
+                else parts.push(`${p}^{${factors[p]}}`);
+            }
+            return parts.join(' \\cdot ');
+        }
+
+        function simplifyRadical(coef, index, radicand) {
+            if (radicand === 0) return { coef: 0, index: index, radicand: 0 };
+            if (radicand === 1) return { coef: coef, index: 1, radicand: 1 };
+
+            let factors = getPrimeFactors(radicand);
+            let outCoef = coef;
+            let inRadicand = 1;
+
+            for (let p in factors) {
+                let exp = factors[p];
+                let outExp = Math.floor(exp / index);
+                let inExp = exp % index;
+                outCoef *= Math.pow(parseInt(p), outExp);
+                inRadicand *= Math.pow(parseInt(p), inExp);
+            }
+
+            return {
+                coef: outCoef,
+                index: inRadicand === 1 ? 1 : index,
+                radicand: inRadicand
+            };
+        }
+
+        function buildLatexRadical(coef, index, radicand) {
+            if (radicand === 1 || index === 1) return `${coef}`;
+            if (coef === 0) return `0`;
+
+            let coefStr = '';
+            if (coef === 1) coefStr = '';
+            else if (coef === -1) coefStr = '-';
+            else coefStr = `${coef}`;
+
+            if (index === 2) return `${coefStr}\\sqrt{${radicand}}`;
+            return `${coefStr}\\sqrt[${index}]{${radicand}}`;
+        }
+
+        /* ==========================================================================
+           EXERCISE GENERATORS FOR 4º ESO (NO RATIONALIZATION)
+           ========================================================================== */
+
+        let currentModule = 1;
+        let currentProblem = null;
+        let selectedMCOption = null;
+        let inputMode = 'form';
+
+        let score = 0;
+        let streak = 0;
+        let totalSolved = 0;
+        let totalCorrect = 0;
+
+        let timerInterval = null;
+        let timeRemaining = 45;
+
+        // Module 1 Generator: Extracción e Introducción de factores
+        function generateModule1() {
+            const isExtract = Math.random() < 0.55;
+
+            if (isExtract) {
+                const index = Math.random() < 0.7 ? 2 : 3;
+                const primes = [2, 3, 5, 7];
+                const p1 = primes[Math.floor(Math.random() * (index === 2 ? 3 : 2))];
+                let p2 = primes[Math.floor(Math.random() * primes.length)];
+                while (p1 === p2) p2 = primes[Math.floor(Math.random() * primes.length)];
+
+                const exp1 = index + Math.floor(Math.random() * 2);
+                const exp2 = Math.floor(Math.random() * index);
+                const num = Math.pow(p1, exp1) * (exp2 > 0 ? Math.pow(p2, exp2) : 1);
+
+                const simplified = simplifyRadical(1, index, num);
+                const qFormula = index === 2 ? `\\sqrt{${num}}` : `\\sqrt[${index}]{${num}}`;
+                const factStr = formatPrimeFactorization(num);
+
+                return {
+                    module: 1,
+                    title: 'Extracción de factores del radical',
+                    instruction: 'Extrae todos los factores posibles del siguiente radical:',
+                    formula: qFormula,
+                    targetCoef: simplified.coef,
+                    targetIndex: simplified.index,
+                    targetRadicand: simplified.radicand,
+                    hint: `Factoriza el número ${num} en factores primos. Luego extrae los factores cuyos exponentes sean mayores o iguales al índice ${index}.`,
+                    explanation: [
+                        `1. Descomponemos el radicando en factores primos: $$${num} = ${factStr}$$`,
+                        `2. Expresamos el radical con su descomposición: $$\\sqrt[${index}]{${num}} = \\sqrt[${index}]{${factStr}}$$`,
+                        `3. Dividimos el exponente de cada factor entre el índice $n = ${index}$: extraemos $${simplified.coef}$ fuera del radical.`,
+                        `4. Resultado simplificado: $$${buildLatexRadical(simplified.coef, simplified.index, simplified.radicand)}$$`
+                    ]
+                };
+            } else {
+                // Introducción de factores
+                const index = Math.random() < 0.7 ? 2 : 3;
+                const coef = Math.floor(Math.random() * 4) + 2;
+                const radicand = Math.floor(Math.random() * 5) + 2;
+                const totalRadicand = Math.pow(coef, index) * radicand;
+                const exprFormula = index === 2 ? `${coef}\\sqrt{${radicand}}` : `${coef}\\sqrt[${index}]{${radicand}}`;
+
+                return {
+                    module: 1,
+                    title: 'Introducción de factores en el radical',
+                    instruction: 'Introduce el coeficiente exterior dentro del radical:',
+                    formula: exprFormula,
+                    targetCoef: 1,
+                    targetIndex: index,
+                    targetRadicand: totalRadicand,
+                    hint: `Para introducir un factor $a$ dentro de una raíz de índice $n$, elévalo al índice: $a^n \\cdot b$.`,
+                    explanation: [
+                        `1. Elevamos el coeficiente $${coef}$ al índice de la raíz ($n = ${index}$): $$${coef}^{${index}} = ${Math.pow(coef, index)}$$`,
+                        `2. Multiplicamos el valor obtenido por el radicando original $${radicand}$: $$${Math.pow(coef, index)} \\cdot ${radicand} = ${totalRadicand}$$`,
+                        `3. Agrupamos todo bajo el mismo radical: $$${buildLatexRadical(1, index, totalRadicand)}$$`
+                    ]
+                };
+            }
+        }
+
+        // Module 2 Generator: Suma y Resta de Radicales Semejantes
+        function generateModule2() {
+            const baseRad = [2, 3, 5, 7][Math.floor(Math.random() * 4)];
+            const mults = [
+                Math.floor(Math.random() * 3) + 1,
+                Math.floor(Math.random() * 3) + 2,
+                Math.floor(Math.random() * 3) + 1
+            ];
+            const extCoefs = [
+                Math.floor(Math.random() * 3) + 1,
+                Math.floor(Math.random() * 3) + 1,
+                Math.floor(Math.random() * 3) + 1
+            ];
+
+            const rad1 = baseRad * mults[0] * mults[0];
+            const rad2 = baseRad * mults[1] * mults[1];
+            const rad3 = baseRad * mults[2] * mults[2];
+
+            const term1Val = extCoefs[0] * mults[0];
+            const term2Val = extCoefs[1] * mults[1];
+            const term3Val = extCoefs[2] * mults[2];
+
+            const finalCoef = term1Val + term2Val - term3Val;
+
+            const strT1 = extCoefs[0] === 1 ? `\\sqrt{${rad1}}` : `${extCoefs[0]}\\sqrt{${rad1}}`;
+            const strT2 = extCoefs[1] === 1 ? `\\sqrt{${rad2}}` : `${extCoefs[1]}\\sqrt{${rad2}}`;
+            const strT3 = extCoefs[2] === 1 ? `\\sqrt{${rad3}}` : `${extCoefs[2]}\\sqrt{${rad3}}`;
+
+            const formulaStr = `${strT1} + ${strT2} - ${strT3}`;
+            const simplified = simplifyRadical(finalCoef, 2, baseRad);
+
+            return {
+                module: 2,
+                title: 'Suma y Resta de Radicales Semejantes',
+                instruction: 'Simplifica la expresión reduciendo a radicales semejantes:',
+                formula: formulaStr,
+                targetCoef: simplified.coef,
+                targetIndex: simplified.index,
+                targetRadicand: simplified.radicand,
+                hint: `Extrae factores de cada término para obtener el radical común \\sqrt{${baseRad}}. Luego suma o resta sus coeficientes.`,
+                explanation: [
+                    `1. Extraemos factores de cada radical individualmente:`,
+                    `   • $${strT1} = ${extCoefs[0]} \\cdot ${mults[0]}\\sqrt{${baseRad}} = ${term1Val}\\sqrt{${baseRad}}$`,
+                    `   • $${strT2} = ${extCoefs[1]} \\cdot ${mults[1]}\\sqrt{${baseRad}} = ${term2Val}\\sqrt{${baseRad}}$`,
+                    `   • $${strT3} = ${extCoefs[2]} \\cdot ${mults[2]}\\sqrt{${baseRad}} = ${term3Val}\\sqrt{${baseRad}}$`,
+                    `2. Agrupamos los coeficientes semejantes: $$(${term1Val} + ${term2Val} - ${term3Val})\\sqrt{${baseRad}}$$`,
+                    `3. Resultado final: $$${buildLatexRadical(simplified.coef, simplified.index, simplified.radicand)}$$`
+                ]
+            };
+        }
+
+        // Module 3 Generator: Multiplicación y División
+        function generateModule3() {
+            const isDiffIndex = Math.random() < 0.45;
+
+            if (!isDiffIndex) {
+                const isMult = Math.random() < 0.5;
+                if (isMult) {
+                    const c1 = Math.floor(Math.random() * 3) + 1;
+                    const c2 = Math.floor(Math.random() * 3) + 1;
+                    const r1 = [2, 3, 5, 6][Math.floor(Math.random() * 4)];
+                    const r2 = [2, 3, 5, 6][Math.floor(Math.random() * 4)];
+
+                    const totalCoef = c1 * c2;
+                    const totalRad = r1 * r2;
+                    const simplified = simplifyRadical(totalCoef, 2, totalRad);
+
+                    const str1 = c1 === 1 ? `\\sqrt{${r1}}` : `${c1}\\sqrt{${r1}}`;
+                    const str2 = c2 === 1 ? `\\sqrt{${r2}}` : `${c2}\\sqrt{${r2}}`;
+
+                    return {
+                        module: 3,
+                        title: 'Multiplicación de Radicales (Mismo Índice)',
+                        instruction: 'Calcula el producto y simplifica el resultado:',
+                        formula: `${str1} \\cdot ${str2}`,
+                        targetCoef: simplified.coef,
+                        targetIndex: simplified.index,
+                        targetRadicand: simplified.radicand,
+                        hint: `Al tener el mismo índice, multiplica los coeficientes por un lado y los radicandos dentro de la raíz.`,
+                        explanation: [
+                            `1. Multiplicamos coeficientes fuera y radicandos dentro: $$(${c1} \\cdot ${c2})\\sqrt{${r1} \\cdot ${r2}} = ${totalCoef}\\sqrt{${totalRad}}$$`,
+                            `2. Simplificamos extrayendo factores del radical resultante: $$${buildLatexRadical(simplified.coef, simplified.index, simplified.radicand)}$$`
+                        ]
+                    };
+                } else {
+                    const resRad = [2, 3, 5, 6][Math.floor(Math.random() * 4)];
+                    const divRad = [2, 3, 5][Math.floor(Math.random() * 3)];
+                    const mult = Math.floor(Math.random() * 2) + 1;
+                    const numRad = resRad * divRad * (mult * mult);
+
+                    const simplified = simplifyRadical(1, 2, numRad / divRad);
+
+                    return {
+                        module: 3,
+                        title: 'División de Radicales (Mismo Índice)',
+                        instruction: 'Calcula el cociente y simplifica el resultado:',
+                        formula: `\\frac{\\sqrt{${numRad}}}{\\sqrt{${divRad}}}`,
+                        targetCoef: simplified.coef,
+                        targetIndex: simplified.index,
+                        targetRadicand: simplified.radicand,
+                        hint: `Aplica la propiedad del cociente de raíces de igual índice: \\frac{\\sqrt{A}}{\\sqrt{B}} = \\sqrt{\\frac{A}{B}}.`,
+                        explanation: [
+                            `1. Unimos ambos términos en una sola raíz dividiendo los radicandos: $$\\sqrt{\\frac{${numRad}}{${divRad}}} = \\sqrt{${numRad / divRad}}$$`,
+                            `2. Simplificamos la raíz resultante: $$${buildLatexRadical(simplified.coef, simplified.index, simplified.radicand)}$$`
+                        ]
+                    };
+                }
+            } else {
+                // Different index (MCM de índices)
+                const basePrime = [2, 3][Math.floor(Math.random() * 2)];
+                const exp1 = Math.floor(Math.random() * 2) + 1;
+                const exp2 = Math.floor(Math.random() * 2) + 1;
+
+                const val1 = Math.pow(basePrime, exp1);
+                const val2 = Math.pow(basePrime, exp2);
+
+                const totalExp = 3 * exp1 + 2 * exp2;
+                const totalRad = Math.pow(basePrime, totalExp);
+                const simplified = simplifyRadical(1, 6, totalRad);
+
+                return {
+                    module: 3,
+                    title: 'Multiplicación con Distinto Índice (MCM)',
+                    instruction: 'Reduce a común índice y simplifica la expresión:',
+                    formula: `\\sqrt{${val1}} \\cdot \\sqrt[3]{${val2}}`,
+                    targetCoef: simplified.coef,
+                    targetIndex: simplified.index,
+                    targetRadicand: simplified.radicand,
+                    hint: `El MCM de los índices 2 y 3 es 6. Ajusta los exponentes de los radicandos para trabajar con índice 6.`,
+                    explanation: [
+                        `1. Calculamos el MCM de los índices (2 y 3): $$\\text{MCM}(2,3) = 6$$`,
+                        `2. Reducimos cada radical a índice común 6:`,
+                        `   • $\\sqrt{${val1}} = \\sqrt[6]{(${val1})^3} = \\sqrt[6]{${Math.pow(val1, 3)}}$`,
+                        `   • $\\sqrt[3]{${val2}} = \\sqrt[6]{(${val2})^2} = \\sqrt[6]{${Math.pow(val2, 2)}}$`,
+                        `3. Multiplicamos dentro del mismo radical de índice 6: $$\\sqrt[6]{${Math.pow(val1, 3)} \\cdot ${Math.pow(val2, 2)}} = \\sqrt[6]{${totalRad}}$$`,
+                        `4. Extraemos todos los factores posibles: $$${buildLatexRadical(simplified.coef, simplified.index, simplified.radicand)}$$`
+                    ]
+                };
+            }
+        }
+
+        // Module 4 Generator: Potencias y Raíz de Raíz
+        function generateModule4() {
+            const isPower = Math.random() < 0.5;
+
+            if (isPower) {
+                const coef = Math.floor(Math.random() * 2) + 1;
+                const n = [2, 3][Math.floor(Math.random() * 2)];
+                const b = [2, 3, 5][Math.floor(Math.random() * 3)];
+                const p = Math.floor(Math.random() * 3) + 2;
+
+                const newCoef = Math.pow(coef, p);
+                const newRad = Math.pow(b, p);
+                const simplified = simplifyRadical(newCoef, n, newRad);
+
+                const qExpr = coef === 1 ? `(\\sqrt[${n}]{${b}})^{${p}}` : `(${coef}\\sqrt[${n}]{${b}})^{${p}}`;
+
+                return {
+                    module: 4,
+                    title: 'Potencia de una Raíz',
+                    instruction: 'Calcula la potencia de la expresión y simplifica:',
+                    formula: qExpr.replace('[2]', ''),
+                    targetCoef: simplified.coef,
+                    targetIndex: simplified.index,
+                    targetRadicand: simplified.radicand,
+                    hint: `Eleva tanto el coeficiente exterior como el radicando al exponente dado: (a\\sqrt[n]{b})^p = a^p \\sqrt[n]{b^p}.`,
+                    explanation: [
+                        `1. Aplicamos el exponente $${p}$ al coeficiente y al radicando: $$${coef > 1 ? `${coef}^{${p}} \\cdot ` : ''}\\sqrt[${n}]{${b}^{${p}}}$$`,
+                        `2. Calculamos las potencias intermedias: $$${newCoef > 1 ? `${newCoef}` : ''}\\sqrt[${n}]{${newRad}}$$`,
+                        `3. Extraemos factores del radical resultante: $$${buildLatexRadical(simplified.coef, simplified.index, simplified.radicand)}$$`
+                    ]
+                };
+            } else {
+                // Raíz de una raíz
+                const n1 = [2, 3][Math.floor(Math.random() * 2)];
+                const n2 = [2, 3][Math.floor(Math.random() * 2)];
+                const finalIndex = n1 * n2;
+                const basePrime = [2, 3][Math.floor(Math.random() * 2)];
+                const exp = Math.floor(Math.random() * 3) + 1;
+
+                const radicandVal = Math.pow(basePrime, exp);
+                const strN1 = n1 === 2 ? '' : `[${n1}]`;
+                const strN2 = n2 === 2 ? '' : `[${n2}]`;
+
+                const simplified = simplifyRadical(1, finalIndex, radicandVal);
+
+                return {
+                    module: 4,
+                    title: 'Raíz de una Raíz',
+                    instruction: 'Expresa bajo un único radical simplificado:',
+                    formula: `\\sqrt${strN1}{\\sqrt${strN2}{${radicandVal}}}`,
+                    targetCoef: simplified.coef,
+                    targetIndex: simplified.index,
+                    targetRadicand: simplified.radicand,
+                    hint: `Para simplificar la raíz de una raíz, multiplica los índices: \\sqrt[n]{\\sqrt[m]{A}} = \\sqrt[n \\cdot m]{A}.`,
+                    explanation: [
+                        `1. Multiplicamos los índices de ambas raíces: $$${n1} \\cdot ${n2} = ${finalIndex}$$`,
+                        `2. Unificamos la expresión en un solo radical: $$\\sqrt[${finalIndex}]{${radicandVal}}$$`,
+                        `3. Simplificamos la raíz final: $$${buildLatexRadical(simplified.coef, simplified.index, simplified.radicand)}$$`
+                    ]
+                };
+            }
+        }
+
+        // Generate Multiple Choice Distractors
+        function generateMCOptions(correctProblem) {
+            const options = [];
+            const correctLatex = buildLatexRadical(correctProblem.targetCoef, correctProblem.targetIndex, correctProblem.targetRadicand);
+
+            options.push({
+                coef: correctProblem.targetCoef,
+                index: correctProblem.targetIndex,
+                radicand: correctProblem.targetRadicand,
+                latex: correctLatex,
+                isCorrect: true
+            });
+
+            // Distractor 1: Off by 1 in Coef
+            options.push({
+                coef: correctProblem.targetCoef + 1,
+                index: correctProblem.targetIndex,
+                radicand: correctProblem.targetRadicand,
+                latex: buildLatexRadical(correctProblem.targetCoef + 1, correctProblem.targetIndex, correctProblem.targetRadicand),
+                isCorrect: false
+            });
+
+            // Distractor 2: Swapped or modified radicand
+            options.push({
+                coef: correctProblem.targetRadicand > 1 ? correctProblem.targetRadicand : correctProblem.targetCoef + 2,
+                index: correctProblem.targetIndex,
+                radicand: correctProblem.targetCoef > 1 ? correctProblem.targetCoef : correctProblem.targetRadicand + 2,
+                latex: buildLatexRadical(
+                    correctProblem.targetRadicand > 1 ? correctProblem.targetRadicand : correctProblem.targetCoef + 2,
+                    correctProblem.targetIndex,
+                    correctProblem.targetCoef > 1 ? correctProblem.targetCoef : correctProblem.targetRadicand + 2
+                ),
+                isCorrect: false
+            });
+
+            // Distractor 3: Left factor inside root
+            const unextractedRad = correctProblem.targetRadicand * (correctProblem.targetIndex === 2 ? 4 : 8);
+            const reducedCoef = Math.max(1, Math.floor(correctProblem.targetCoef / 2));
+            options.push({
+                coef: reducedCoef,
+                index: correctProblem.targetIndex,
+                radicand: unextractedRad,
+                latex: buildLatexRadical(reducedCoef, correctProblem.targetIndex, unextractedRad),
+                isCorrect: false
+            });
+
+            // Shuffle options
+            for (let i = options.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [options[i], options[j]] = [options[j], options[i]];
+            }
+
+            return options;
+        }
+
+        /* ==========================================================================
+           UI WORKFLOW & EVENT HANDLERS
+           ========================================================================== */
+
+        function renderMath() {
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise().catch(err => console.log('MathJax typeset error:', err));
+            }
+        }
+
+        function switchModule(modId) {
+            playAudio('click');
+            currentModule = modId;
+            clearInterval(timerInterval);
+
+            // Update tab styles
+            document.querySelectorAll('.module-tab').forEach((tab, idx) => {
+                const id = idx + 1;
+                if (id === modId) {
+                    tab.className = 'module-tab flex items-center space-x-2 px-4 py-2.5 rounded-xl font-medium text-xs sm:text-sm whitespace-nowrap transition-all duration-200 bg-indigo-600 text-white shadow-lg shadow-indigo-600/30';
+                } else {
+                    tab.className = 'module-tab flex items-center space-x-2 px-4 py-2.5 rounded-xl font-medium text-xs sm:text-sm whitespace-nowrap transition-all duration-200 bg-slate-800/80 text-slate-300 hover:bg-slate-700 border border-slate-700';
+                }
+            });
+
+            const timerContainer = document.getElementById('timer-container');
+            if (modId === 5) {
+                timerContainer.classList.remove('hidden');
+                document.getElementById('module-badge').innerText = '🔥 Módulo 5 - Examen Mix';
+            } else {
+                timerContainer.classList.add('hidden');
+                document.getElementById('module-badge').innerText = `Módulo ${modId}`;
+            }
+
+            generateNextExercise();
+        }
+
+        function generateNextExercise() {
+            selectedMCOption = null;
+            document.getElementById('feedback-card').classList.add('hidden');
+            document.getElementById('explanation-card').classList.add('hidden');
+            document.getElementById('hint-box').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('check-btn').classList.remove('hidden');
+
+            document.getElementById('input-coef').value = '';
+            document.getElementById('input-radicand').value = '';
+            document.getElementById('input-index').value = '2';
+            document.getElementById('no-radical-check').checked = false;
+            handleNoRadicalToggle();
+
+            let mod = currentModule;
+            if (mod === 5) {
+                mod = Math.floor(Math.random() * 4) + 1;
+            }
+
+            if (mod === 1) currentProblem = generateModule1();
+            else if (mod === 2) currentProblem = generateModule2();
+            else if (mod === 3) currentProblem = generateModule3();
+            else if (mod === 4) currentProblem = generateModule4();
+
+            // Populate UI Elements with PROPORTIONATED HTML + MATHJAX
+            document.getElementById('exercise-title').innerText = currentProblem.title;
+            document.getElementById('hint-text').innerText = currentProblem.hint;
+            document.getElementById('math-instruction').innerText = currentProblem.instruction;
+            document.getElementById('math-formula').innerHTML = `$$${currentProblem.formula}$$`;
+
+            currentProblem.options = generateMCOptions(currentProblem);
+            renderMCOptions();
+
+            const stepsContainer = document.getElementById('explanation-steps');
+            stepsContainer.innerHTML = currentProblem.explanation.map(step => `<div class="p-3 bg-slate-950/40 rounded-xl border border-slate-800/60 leading-relaxed">${step}</div>`).join('');
+
+            updateLivePreview();
+            renderMath();
+
+            if (currentModule === 5) {
+                startTimer();
+            }
+        }
+
+        function switchInputMode(mode) {
+            playAudio('click');
+            inputMode = mode;
+            const btnForm = document.getElementById('mode-btn-form');
+            const btnMC = document.getElementById('mode-btn-mc');
+            const modeForm = document.getElementById('input-mode-form');
+            const modeMC = document.getElementById('input-mode-mc');
+
+            if (mode === 'form') {
+                btnForm.className = 'px-4 py-1.5 rounded-lg text-xs font-semibold transition-all bg-indigo-600 text-white shadow';
+                btnMC.className = 'px-4 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white';
+                modeForm.classList.remove('hidden');
+                modeMC.classList.add('hidden');
+            } else {
+                btnMC.className = 'px-4 py-1.5 rounded-lg text-xs font-semibold transition-all bg-indigo-600 text-white shadow';
+                btnForm.className = 'px-4 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white';
+                modeMC.classList.remove('hidden');
+                modeForm.classList.add('hidden');
+            }
+        }
+
+        function handleNoRadicalToggle() {
+            const noRad = document.getElementById('no-radical-check').checked;
+            const indexWrap = document.getElementById('index-input-wrapper');
+            const radWrap = document.getElementById('radicand-input-wrapper');
+
+            if (noRad) {
+                indexWrap.classList.add('opacity-40', 'pointer-events-none');
+                radWrap.classList.add('opacity-40', 'pointer-events-none');
+                document.getElementById('input-radicand').value = '1';
+            } else {
+                indexWrap.classList.remove('opacity-40', 'pointer-events-none');
+                radWrap.classList.remove('opacity-40', 'pointer-events-none');
+            }
+            updateLivePreview();
+        }
+
+        function updateLivePreview() {
+            const coefInput = document.getElementById('input-coef').value.trim();
+            const indexInput = document.getElementById('input-index').value.trim();
+            const radInput = document.getElementById('input-radicand').value.trim();
+            const noRad = document.getElementById('no-radical-check').checked;
+
+            const coef = coefInput === '' ? 1 : parseInt(coefInput);
+            const index = indexInput === '' ? 2 : parseInt(indexInput);
+            const rad = radInput === '' ? 1 : parseInt(radInput);
+
+            let previewLatex = '';
+            if (noRad || rad === 1 || index === 1) {
+                previewLatex = `$${coef}$`;
+            } else {
+                previewLatex = `$${buildLatexRadical(coef, index, rad)}$`;
+            }
+
+            const previewEl = document.getElementById('live-preview');
+            previewEl.innerHTML = previewLatex;
+            renderMath();
+        }
+
+        function renderMCOptions() {
+            const grid = document.getElementById('mc-options-grid');
+            grid.innerHTML = currentProblem.options.map((opt, idx) => `
+                <button onclick="selectMCOption(${idx})" id="mc-opt-${idx}" 
+                        class="mc-option-card p-3 sm:p-4 rounded-xl border border-slate-700/80 bg-slate-900/60 hover:bg-slate-800 text-slate-200 font-bold text-base sm:text-lg flex items-center justify-between transition-all">
+                    <span class="math-container flex-grow text-center">$$${opt.latex}$$</span>
+                    <div class="w-6 h-6 rounded-full border border-slate-600 flex items-center justify-center text-xs text-slate-400 ml-2">
+                        ${String.fromCharCode(65 + idx)}
+                    </div>
+                </button>
+            `).join('');
+            renderMath();
+        }
+
+        function selectMCOption(idx) {
+            playAudio('click');
+            selectedMCOption = idx;
+            document.querySelectorAll('.mc-option-card').forEach((card, i) => {
+                if (i === idx) {
+                    card.className = 'mc-option-card p-3 sm:p-4 rounded-xl border-2 border-indigo-500 bg-indigo-500/20 text-white font-bold text-base sm:text-lg flex items-center justify-between transition-all shadow-lg shadow-indigo-500/20';
+                } else {
+                    card.className = 'mc-option-card p-3 sm:p-4 rounded-xl border border-slate-700/80 bg-slate-900/60 hover:bg-slate-800 text-slate-200 font-bold text-base sm:text-lg flex items-center justify-between transition-all opacity-70';
+                }
+            });
+        }
+
+        function toggleHint() {
+            playAudio('click');
+            const hintBox = document.getElementById('hint-box');
+            hintBox.classList.toggle('hidden');
+            renderMath();
+        }
+
+        function toggleExplanation() {
+            playAudio('click');
+            const expCard = document.getElementById('explanation-card');
+            expCard.classList.toggle('hidden');
+            renderMath();
+        }
+
+        /* ==========================================================================
+           ANSWER VERIFICATION & GAMIFICATION
+           ========================================================================== */
+
+        function checkAnswer() {
+            let isCorrect = false;
+            let userCoef = 1, userIndex = 2, userRadicand = 1;
+
+            if (inputMode === 'form') {
+                const coefVal = document.getElementById('input-coef').value.trim();
+                const indexVal = document.getElementById('input-index').value.trim();
+                const radVal = document.getElementById('input-radicand').value.trim();
+                const noRad = document.getElementById('no-radical-check').checked;
+
+                userCoef = coefVal === '' ? 1 : parseInt(coefVal);
+                userIndex = noRad ? 1 : (indexVal === '' ? 2 : parseInt(indexVal));
+                userRadicand = noRad ? 1 : (radVal === '' ? 1 : parseInt(radVal));
+
+                const userSimpl = simplifyRadical(userCoef, userIndex, userRadicand);
+                const targetSimpl = simplifyRadical(currentProblem.targetCoef, currentProblem.targetIndex, currentProblem.targetRadicand);
+
+                if (userSimpl.coef === targetSimpl.coef &&
+                    userSimpl.index === targetSimpl.index &&
+                    userSimpl.radicand === targetSimpl.radicand) {
+                    isCorrect = true;
+                }
+            } else {
+                if (selectedMCOption === null) {
+                    return;
+                }
+                isCorrect = currentProblem.options[selectedMCOption].isCorrect;
+            }
+
+            clearInterval(timerInterval);
+
+            const feedbackCard = document.getElementById('feedback-card');
+            const feedbackTitle = document.getElementById('feedback-title');
+            const feedbackDetail = document.getElementById('feedback-detail');
+
+            feedbackCard.classList.remove('hidden');
+
+            totalSolved++;
+
+            if (isCorrect) {
+                playAudio('correct');
+                streak++;
+                totalCorrect++;
+                score += 100 + (streak * 10);
+
+                feedbackCard.className = 'mt-6 p-4 rounded-xl border border-emerald-500/40 bg-emerald-500/10 text-emerald-300 text-center animate-fade-in';
+                feedbackTitle.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-400"></i> ¡Respuesta Correcta!';
+                feedbackDetail.innerHTML = `¡Excelente trabajo! Has simplificado el radical perfectamente: $${buildLatexRadical(currentProblem.targetCoef, currentProblem.targetIndex, currentProblem.targetRadicand)}$`;
+
+            } else {
+                playAudio('incorrect');
+                streak = 0;
+
+                feedbackCard.className = 'mt-6 p-4 rounded-xl border border-rose-500/40 bg-rose-500/10 text-rose-300 text-center animate-fade-in';
+                feedbackTitle.innerHTML = '<i class="fa-solid fa-circle-xmark text-rose-400"></i> Respuesta Incorrecta';
+                feedbackDetail.innerHTML = `La solución correcta simplificada es: $${buildLatexRadical(currentProblem.targetCoef, currentProblem.targetIndex, currentProblem.targetRadicand)}$`;
+            }
+
+            document.getElementById('check-btn').classList.add('hidden');
+            document.getElementById('next-btn').classList.remove('hidden');
+
+            updateGamificationUI();
+            renderMath();
+        }
+
+        function updateGamificationUI() {
+            document.getElementById('streak-count').innerText = streak;
+            document.getElementById('points-count').innerText = score;
+            document.getElementById('stat-total').innerText = totalSolved;
+
+            const accuracy = totalSolved > 0 ? Math.round((totalCorrect / totalSolved) * 100) : 100;
+            document.getElementById('stat-accuracy').innerText = `${accuracy}%`;
+
+            let rank = 'Iniciado 🌱';
+            let levelStr = 'Nivel 1 (ESO)';
+            if (score >= 300 && score < 800) {
+                rank = 'Aprendiz ⚡';
+                levelStr = 'Nivel 2 (ESO)';
+            } else if (score >= 800 && score < 1500) {
+                rank = 'Especialista 🎯';
+                levelStr = 'Nivel 3 (ESO)';
+            } else if (score >= 1500 && score < 2500) {
+                rank = 'Maestro Radical 👑';
+                levelStr = 'Nivel 4 (ESO)';
+            } else if (score >= 2500) {
+                rank = 'Gran Mago Radical 🧙‍♂️';
+                levelStr = 'Nivel Superior ✨';
+            }
+
+            document.getElementById('rank-text').innerText = rank;
+            document.getElementById('stat-level').innerText = levelStr;
+        }
+
+        /* ==========================================================================
+           TIMER LOGIC FOR CHALLENGE MODE
+           ========================================================================== */
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timeRemaining = 45;
+            const timerBar = document.getElementById('timer-bar');
+            const timerText = document.getElementById('timer-text');
+
+            timerBar.style.width = '100%';
+            timerText.innerText = `${timeRemaining} s`;
+
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                timerText.innerText = `${timeRemaining} s`;
+                const pct = (timeRemaining / 45) * 100;
+                timerBar.style.width = `${pct}%`;
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    playAudio('incorrect');
+                    checkAnswer();
+                }
+            }, 1000);
+        }
+
+        /* ==========================================================================
+           APP INITIALIZATION
+           ========================================================================== */
+        window.appReady = function() {
+            generateNextExercise();
+        };
+
+        window.onload = function() {
+            if (window.MathJax && MathJax.startup) {
+                generateNextExercise();
+            }
+        };
+    </script>
+</body>
+</html>
